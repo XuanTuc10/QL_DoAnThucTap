@@ -1,0 +1,122 @@
+﻿@model QL_DoAnThucTap.Models.EF.Account
+@{
+    ViewBag.Title = "Thêm mới tài khoản";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+@section naviheader {
+    <!-- Left navbar links -->
+    <ul class="navbar-nav">
+        <li class="nav-item">
+            <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
+        </li>
+        <li class="nav-item d-none d-sm-inline-block">
+            <a href="/Admin" class="nav-link">Trang chủ</a>
+        </li>
+        <li class="nav-item d-none d-sm-inline-block">
+            <a href="/Admin/Account" class="nav-link">Tài khoản</a>
+        </li>
+        <li class="nav-item d-none d-sm-inline-block">
+            <a href="#" class="nav-link">Thêm mới</a>
+        </li>
+    </ul>
+}
+
+<!-- Content Header (Page header) -->
+<section class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1>Thêm mới tài khoản</h1>
+            </div>
+        </div>
+    </div><!-- /.container-fluid -->
+</section>
+
+<!-- Main content -->
+<section class="content">
+
+    <!-- Default box -->
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">Thông tin thêm mới</h3>
+        </div>
+        <div class="card-body">
+            <div class="bs-stepper-content">
+                @using (Html.BeginForm("Create", "Account", FormMethod.Post, new { id = "myForm" }))
+                {
+                    @Html.AntiForgeryToken()
+                    @Html.ValidationSummary(true)
+                    <!-- your steps content here -->
+                    <div id="logins-part" class="content active dstepper-block" role="tabpanel" aria-labelledby="logins-part-trigger">
+                        <div class="form-group">
+                            <label for="InputEmail">Email</label>
+                            @Html.TextBoxFor(x => x.Email, new { @class = "form-control", @placeholder = "Email" })
+                            @Html.ValidationMessageFor(x => x.Email, null, new { @class = "text-danger" })
+                        </div>
+                        <div class="form-group">
+                            <label for="InputPassword">Mật khẩu</label>
+                            @Html.TextBoxFor(x => x.Password, new { @class = "form-control", @placeholder = "Mật khẩu", type = "password" })
+                            @Html.ValidationMessageFor(x => x.Password, null, new { @class = "text-danger" })
+                        </div>
+                        <div class="form-group">
+                            <label for="InputConfirmPassword">Nhập lại mật khẩu</label>
+                            <input type="password" class="form-control" id="InputConfirmPassword" placeholder="Nhập lại mật khẩu">
+                            <div id="confirmPasswordError" class="text-danger"></div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Account</label>
+                            @Html.DropDownListFor(x => x.RoleId, ViewBag.Roles as SelectList, "Khác", new { @class = "form-control select2 select2-hidden-accessible", style = "width: 100%;", data_select2_id = "1", tabindex = "-1", aria_hidden = "true" })
+                        </div>
+                    </div>
+                    <div id="information-part" class="content" role="tabpanel" aria-labelledby="information-part-trigger">
+                        <a href="/Admin/Account" class="btn btn-danger">Quay lại</a>
+                        <button type="submit" class="btn btn-primary btnAdd">Submit</button>
+                    </div>
+                }
+
+            </div>
+        </div>
+        <!-- /.card-body -->
+    </div>
+    <!-- /.card -->
+
+</section>
+<!-- /.content -->
+@section scripts {
+    <script>
+        $(document).ready(function () {
+            $("#myForm").submit(function (e) {
+                e.preventDefault(); // Ngăn chặn hành vi mặc định của form
+
+                var password = $("#Password").val();
+                var confirmPassword = $("#InputConfirmPassword").val();
+
+                if (password !== confirmPassword) {
+                    $("#confirmPasswordError").text("Mật khẩu không khớp");
+                    return; // Dừng lại nếu mật khẩu không khớp
+                }
+
+                // Nếu mật khẩu khớp, tiếp tục gửi yêu cầu đăng ký tài khoản
+                $.ajax({
+                    url: '/Admin/Account/Create',
+                    type: 'POST',
+                    dataType: 'json',
+                    data: $("#myForm").serialize(),
+                    success: function (response) {
+                        if (response.success) {
+                            alert("Bản ghi đã được thêm thành công.");
+                            window.location.href = response.redirectUrl; // Chuyển hướng về trang chủ
+                        } else {
+                            alert("Lỗi: " + response.error);
+                        }
+                    },
+                    error: function (xhr) {
+                        var errorMessage = "Có lỗi xảy ra trong quá trình xử lý yêu cầu.";
+                        alert("Lỗi: " + errorMessage);
+                    }
+                });
+            });
+        });
+    </script>
+}

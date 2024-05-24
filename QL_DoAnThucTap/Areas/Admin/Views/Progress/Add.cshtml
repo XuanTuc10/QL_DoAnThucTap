@@ -1,0 +1,130 @@
+﻿@model QL_DoAnThucTap.Models.EF.Progress
+@{
+    ViewBag.Title = "Thêm mới đồ án";
+    var project = ViewContext.HttpContext.Request.Query["project"];
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+@section naviheader {
+    <!-- Left navbar links -->
+    <ul class="navbar-nav">
+        <li class="nav-item">
+            <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
+        </li>
+        <li class="nav-item d-none d-sm-inline-block">
+            <a href="/Admin" class="nav-link">Trang chủ</a>
+        </li>
+        <li class="nav-item d-none d-sm-inline-block">
+            <a href="/Admin/Project" class="nav-link">Đồ án</a>
+        </li>
+        <li class="nav-item d-none d-sm-inline-block">
+            <a href="/Admin/Project" class="nav-link">Tiến trình</a>
+        </li>
+        <li class="nav-item d-none d-sm-inline-block">
+            <a href="#" class="nav-link">Thêm mới</a>
+        </li>
+    </ul>
+}
+
+<!-- Content Header (Page header) -->
+<section class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1>Thêm mới tiến trình</h1>
+            </div>
+        </div>
+    </div><!-- /.container-fluid -->
+</section>
+
+<!-- Main content -->
+<section class="content">
+
+    <!-- Default box -->
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">Thông tin thêm mới</h3>
+        </div>
+        <div class="card-body">
+            <div class="bs-stepper-content">
+                @using (Html.BeginForm("Add", "Progress", FormMethod.Post, new { id = "myForm" }))
+                {
+                    @Html.AntiForgeryToken()
+                    @Html.ValidationSummary(true)
+                    @Html.Hidden("projectId", project)
+                    <!-- your steps content here -->
+                    <div id="logins-part" class="content active dstepper-block" role="tabpanel" aria-labelledby="logins-part-trigger">
+                        <div class="form-group">
+                            <label for="exampleInputPassword1">Tên đồ án</label>
+                            @Html.TextBoxFor(x => x.Title, new { @class = "form-control", @placeholder = "Tiêu đề" })
+                            @Html.ValidationMessageFor(x => x.Title, null, new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Ngày sinh:</label>
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
+                            </div>
+                            @Html.TextBoxFor(x => x.StartDate, new { @class = "form-control", data_inputmask_alias = "datetime", data_inputmask_inputformat = "dd/mm/yyyy", data_mask = "", inputmode = "numeric" })
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Ngày sinh:</label>
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
+                            </div>
+                            @Html.TextBoxFor(x => x.EndDate, new { @class = "form-control", data_inputmask_alias = "datetime", data_inputmask_inputformat = "dd/mm/yyyy", data_mask = "", inputmode = "numeric" })
+                        </div>
+                    </div>
+
+                    <div id="information-part" class="content" role="tabpanel" aria-labelledby="information-part-trigger">
+                        <a href="/Admin/Progress" class="btn btn-danger">Quay lại</a>
+                        <button type="submit" class="btn btn-primary btnAdd">Submit</button>
+                    </div>
+                }
+
+            </div>
+        </div>
+        <!-- /.card-body -->
+    </div>
+    <!-- /.card -->
+
+</section>
+<!-- /.content -->
+@section scripts {
+    <script>
+        $(document).ready(function () {
+            // Gán giá trị projectId vào hidden input khi trang được tải
+            var projectId = '@project';
+            $("#projectId").val(projectId);
+        });
+
+        $("#myForm").submit(function (e) {
+            e.preventDefault();
+            // Bổ sung giá trị projectId vào dữ liệu gửi đi
+            var formData = $("#myForm").serializeArray();
+            formData.push({ name: "projectId", value: $("#projectId").val() });
+
+            $.ajax({
+                url: '/Admin/Progress/Add',
+                type: 'POST',
+                dataType: 'json',
+                data: formData,
+                success: function (response) {
+                    if (response.success) {
+                        alert("Bản ghi đã được thêm thành công.");
+                        window.location.href = response.redirectUrl;
+                    } else {
+                        alert("Lỗi: " + response.error);
+                    }
+                },
+                error: function (xhr) {
+                    var errorMessage = "Có lỗi xảy ra trong quá trình xử lý yêu cầu.";
+                    alert("Lỗi: " + errorMessage);
+                }
+            });
+        });
+    </script>
+}

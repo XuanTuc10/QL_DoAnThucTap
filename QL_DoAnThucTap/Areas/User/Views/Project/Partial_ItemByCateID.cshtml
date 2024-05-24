@@ -1,0 +1,27 @@
+﻿ @model X.PagedList.PagedList<QL_DoAnThucTap.Models.EF.Project>
+    @using X.PagedList.Mvc.Core;
+@if (Model != null && Model.Any())
+{
+    foreach (var item in Model)
+    {
+        <div class="col-lg-4 col-md-6 portfolio-item @item.TopicId wow fadeInUp" data-wow-delay="0.1s">
+            <div class="rounded overflow-hidden">
+                <div class="position-relative overflow-hidden">
+                    <img class="img-fluid w-100" src="img/portfolio-1.jpg" alt="">
+                    <div class="portfolio-overlay">
+                        <a class="btn btn-square btn-outline-light mx-1" href="/User/Progress?project=@item.Id"><i class="fa fa-eye"></i></a>
+                        <a class="btn btn-square btn-outline-light mx-1" href="/User/Progress"><i class="fa fa-link"></i></a>
+                    </div>
+                </div>
+                <div class="bg-light p-4">
+                    <p class="text-primary fw-medium mb-2">@item.Topic.Name</p>
+                    <h5 class="lh-base mb-0">@item.Name</h5>
+                </div>
+            </div>
+        </div>
+    }
+}
+else
+{
+    <h5 class="lh-base mb-0">None Document</h5>
+}

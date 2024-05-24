@@ -1,0 +1,14 @@
+﻿ @model QL_DoAnThucTap.Models.EF.Reminder
+    @using X.PagedList.Mvc.Core;
+@{
+    ViewBag.Title = "Đồ án";
+    Layout = "~/Areas/User/Views/Shared/_Layout.cshtml";
+}
+<div class="container-xxl py-5">
+    <div class="container py-5 px-lg-5">
+        <div id="content">
+            <h1>@Model.Title</h1>
+            <p>@Model.Content</p>      
+        </div>
+    </div>
+</div>

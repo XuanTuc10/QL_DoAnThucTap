@@ -1,0 +1,139 @@
+﻿@model QL_DoAnThucTap.Models.EF.Account
+@{
+    ViewBag.Title = "Đổi mật khẩu";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+@section naviheader {
+    <!-- Left navbar links -->
+    <ul class="navbar-nav">
+        <li class="nav-item">
+            <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
+        </li>
+        <li class="nav-item d-none d-sm-inline-block">
+            <a href="/Admin" class="nav-link">Trang chủ</a>
+        </li>
+        <li class="nav-item d-none d-sm-inline-block">
+            <a href="/Admin/ChangePassword" class="nav-link">Tài khoản</a>
+        </li>
+        <li class="nav-item d-none d-sm-inline-block">
+            <a href="#" class="nav-link">Đổi mật khẩu</a>
+        </li>
+    </ul>
+}
+
+<!-- Content Header (Page header) -->
+<section class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1>Đổi mật khẩu</h1>
+            </div>
+        </div>
+    </div><!-- /.container-fluid -->
+</section>
+
+<!-- Main content -->
+<section class="content">
+
+    <!-- Default box -->
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">Thông tin cập nhật</h3>
+        </div>
+        <div class="card-body">
+            <div class="bs-stepper-content">
+                @using (Html.BeginForm("ChangeAccount", "Account", FormMethod.Post, new { }))
+                {
+                    @Html.AntiForgeryToken()
+                    @Html.ValidationSummary(true)
+                    @Html.HiddenFor(x => x.Id)
+                    <!-- your steps content here -->
+                    <div id="logins-part" class="content active dstepper-block" role="tabpanel" aria-labelledby="logins-part-trigger">
+                        <div class="form-group">
+                            <label for="InputPassword">Mật khẩu mới</label>
+                            @Html.TextBoxFor(x => x.Password, new { @class = "form-control", @placeholder = "Mật khẩu", type = "password" })
+                            @Html.ValidationMessageFor(x => x.Password, null, new { @class = "text-danger" })
+                        </div>
+                        <div class="form-group">
+                            <label for="NewPassword">Nhập lại mật khẩu</label>
+                            <input type="password" class="form-control" id="NewPassword" placeholder="Mật khẩu mới">
+                            <div id="passwordError" class="text-danger"></div>
+                        </div>
+                        <div class="form-group">
+                            <label for="InputConfirmPassword">Nhập lại mật khẩu</label>
+                            <input type="password" class="form-control" id="InputConfirmPassword" placeholder="Nhập lại mật khẩu">
+                            <div id="confirmPasswordError" class="text-danger"></div>
+                        </div>
+                        <div class="form-group">
+                            <label>Account</label>
+                            @Html.DropDownListFor(x => x.RoleId, ViewBag.Roles as SelectList, "Khác", new { @class = "form-control select2 select2-hidden-accessible", style = "width: 100%;", data_select2_id = "1", tabindex = "-1", aria_hidden = "true" })
+                        </div>
+                    </div>
+                    <div id="information-part" class="content" role="tabpanel" aria-labelledby="information-part-trigger">
+                        <a href="/Admin/Account" class="btn btn-danger">Quay lại</a>
+                        <button type="submit" data-id="#SelectedItemId" class="btn btn-primary">Submit</button>
+                    </div>
+                }
+
+            </div>
+        </div>
+        <!-- /.card-body -->
+    </div>
+    <!-- /.card -->
+
+</section>
+<!-- /.content -->
+@section scripts {
+    <script>
+        $(document).ready(function () {
+            $("#myForm").submit(function (e) {
+                e.preventDefault(); // Ngăn chặn hành vi mặc định của form
+
+                var newPassword = $("#NewPassword").val();
+                var confirmPassword = $("#InputConfirmPassword").val();
+
+                if (password.length < 8) {
+                    $("#passwordError").text("Mật khẩu phải có ít nhất 8 ký tự");
+                    return;
+                }
+
+                // Kiểm tra xem mật khẩu có chứa ít nhất một chữ hoa, một chữ thường và một số
+                var uppercaseRegex = /[A-Z]/; // Biểu thức chính quy để kiểm tra chữ hoa
+                var lowercaseRegex = /[a-z]/; // Biểu thức chính quy để kiểm tra chữ thường
+                var numberRegex = /[0-9]/; // Biểu thức chính quy để kiểm tra số
+
+                if (!uppercaseRegex.test(password) || !lowercaseRegex.test(password) || !numberRegex.test(password)) {
+                    $("#passwordError").text("Mật khẩu phải chứa ít nhất một chữ hoa, một chữ thường và một số");
+                    return;
+                }
+
+                if (newPassword !== confirmPassword) {
+                    $("#confirmPasswordError").text("Mật khẩu không khớp");
+                    return; // Dừng lại nếu mật khẩu không khớp
+                }
+
+                // Nếu mật khẩu khớp, tiếp tục gửi yêu cầu đăng ký tài khoản
+                $.ajax({
+                    url: '/Admin/Account/ChangeAccount',
+                    type: 'POST',
+                    dataType: 'json',
+                    data: $("#myForm").serialize(),
+                    success: function (response) {
+                        if (response.success) {
+                            alert("Thay đổi thông tin thành công");
+                            window.location.href = response.redirectUrl; // Chuyển hướng về trang chủ
+                        } else {
+                            alert("Lỗi: " + response.error);
+                        }
+                    },
+                    error: function (xhr) {
+                        var errorMessage = "Có lỗi xảy ra trong quá trình xử lý yêu cầu.";
+                        alert("Lỗi: " + errorMessage);
+                    }
+                });
+            });
+        });
+    </script>
+}
+
+

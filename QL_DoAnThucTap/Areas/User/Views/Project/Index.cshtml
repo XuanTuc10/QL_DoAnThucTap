@@ -1,0 +1,133 @@
+﻿@model X.PagedList.PagedList<QL_DoAnThucTap.Models.EF.Project>
+@using X.PagedList.Mvc.Core;
+
+@{
+    ViewBag.Title = "Đồ án";
+    Layout = "~/Areas/User/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container-xxl py-5 bg-primary hero-header">
+    <div class="container my-5 py-5 px-lg-5">
+        <div class="row g-5 py-5">
+            <div class="col-12 text-center">
+                <h1 class="text-white animated slideInDown">Quản lý đồ án</h1>
+                <hr class="bg-white mx-auto mt-0" style="width: 90px;">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb justify-content-center">
+                        <li class="breadcrumb-item"><a class="text-white" href="#">Trang chủ</a></li>
+                        <li class="breadcrumb-item text-white active" aria-current="page">Đồ án</li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Projects Start -->
+<div class="container-xxl py-5">
+    <div class="container py-5 px-lg-5">
+        <div class="wow fadeInUp" data-wow-delay="0.1s">
+            <p class="section-title text-secondary justify-content-center"><span></span>Đồ án<span></span></p>
+            <h1 class="text-center mb-5">Dự án gần đây</h1>
+        </div>
+
+        @if (Model != null && Model.Any())
+        {
+            <div class="row mt-n2 wow fadeInUp" data-wow-delay="0.3s">
+                <div class="col-12 text-center">
+                    <ul class="list-inline mb-5" id="portfolio-flters">
+                        <li class="mx-2 active" data-filter="*">Tất cả</li>
+                        @foreach (var item in Model.Select(m => m.Topic).Distinct())
+                        {
+                            <li class="mx-2" data-filter=".topic-@item.Id">@item.Name</li>
+                        }
+                    </ul>
+                    <!-- Year Filter as Dropdown -->
+                    <select class="form-select mb-5" id="portfolio-year-filter">
+                        <option value="*">Tất cả</option>
+                        @foreach (var year in Model.Select(m => m.CreateDate.Year).Distinct())
+                        {
+                            <option value=".year-@year">@year</option>
+                        }
+                    </select>
+                </div>
+            </div>
+        }
+        
+        <div class="row g-4 portfolio-container">
+            @if (Model != null && Model.Any())
+            {
+                foreach (var item in Model)
+                {
+                    <div class="col-lg-4 col-md-6 portfolio-item topic-@item.TopicId year-@item.CreateDate.Year wow fadeInUp" data-wow-delay="0.1s">
+                        <div class="rounded overflow-hidden">
+                            <div class="position-relative overflow-hidden">
+                                <img class="img-fluid w-100" src="~/Content/user/lib/img/portfolio-1.jpg" alt="">
+                                <div class="portfolio-overlay">
+                                    <a class="btn btn-square btn-outline-light mx-1" href="/User/Progress?project=@item.Id"><i class="fa fa-eye"></i></a>
+                                    <a class="btn btn-square btn-outline-light mx-1" href="/User/Progress"><i class="fa fa-link"></i></a>
+                                    
+                                </div>
+                            </div>
+                            <div class="bg-light p-4">
+                                <p class="text-primary fw-medium mb-2">@item.Topic.Name</p>
+                                <h5 class="lh-base mb-0">@item.Name</h5>
+                                <p class="lh-base mb-0">Sinh viên: @item.Student.Name</p>
+                                <p class="lh-base mb-0">Người hướng dẫn: @item.Teacher.Name</p>
+                            </div>
+                        </div>
+                    </div>
+                }
+            }
+            else
+            {
+                <h5 class="lh-base mb-0">None Document</h5>
+            }
+        </div>
+    </div>
+</div>
+<!-- Projects End -->
+
+@section scripts {
+    <script>
+        $(document).ready(function () {
+            // Initialize Isotope
+            var $grid = $('.portfolio-container').isotope({
+                itemSelector: '.portfolio-item',
+                layoutMode: 'fitRows'
+            });
+
+            // Store filter for each group
+            var filters = {
+                topic: '*',
+                year: '*'
+            };
+
+            // Function to combine filters
+            function concatValues(filters) {
+                return Object.values(filters).join('');
+            }
+
+            // Filter items on button click for topics
+            $('#portfolio-flters').on('click', 'li', function () {
+                var filterValue = $(this).attr('data-filter');
+                filters.topic = filterValue;
+                var combinedFilter = concatValues(filters);
+                $grid.isotope({ filter: combinedFilter });
+
+                // Update active class
+                $('#portfolio-flters li').removeClass('active');
+                $(this).addClass('active');
+            });
+
+            // Filter items on change for years
+            $('#portfolio-year-filter').on('change', function () {
+                var filterValue = $(this).val();
+                filters.year = filterValue;
+                var combinedFilter = concatValues(filters);
+                $grid.isotope({ filter: combinedFilter });
+            });
+        });
+    </script>
+}
+

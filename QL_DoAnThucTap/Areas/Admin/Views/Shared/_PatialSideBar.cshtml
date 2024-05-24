@@ -1,0 +1,135 @@
+﻿<!-- Sidebar -->
+<div class="sidebar">
+    <!-- Sidebar user (optional) -->
+    <div class="user-panel mt-3 pb-3 mb-3 d-flex">
+        <div class="image">
+            <img src="~/Content/client/dist/img/avatar.png" class="img-circle elevation-2" alt="User Image">
+        </div>
+        <div class="info">
+            <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <p>
+                            @User.Identity.Name.Substring(0, User.Identity.Name.IndexOf('@')).ToUpper()
+                            <i class="right fas fa-angle-left"></i>
+                        </p>
+                    </a>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a href="/Admin" class="nav-link">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Thông tin</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/Admin" class="nav-link">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Đổi mật khẩu</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <form id="logoutForm" method="post" action="/Access/LogOut" style="display: none;">
+                                @Html.AntiForgeryToken()
+                            </form>
+                            <a href="#" class="nav-link" onclick="event.preventDefault(); document.getElementById('logoutForm').submit();">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Đăng xuất</p>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- SidebarSearch Form -->
+    <div class="form-inline">
+        <div class="input-group" data-widget="sidebar-search">
+            <input class="form-control form-control-sidebar" type="search" placeholder="Search" aria-label="Search">
+            <div class="input-group-append">
+                <button class="btn btn-sidebar">
+                    <i class="fas fa-search fa-fw"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sidebar Menu -->
+    <nav class="mt-2">
+        <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+            <!-- Add icons to the links using the .nav-icon class
+            with font-awesome or any other icon font library -->
+            <li class="nav-item">
+                <a class="nav-link">
+                    <i class="nav-icon fas fa-tachometer-alt"></i>
+                    <p>
+                        Danh Mục Quản Lý
+                        <i class="right fas fa-angle-left"></i>
+                    </p>
+                </a>
+                <ul class="nav nav-treeview">
+                    <li class="nav-item">
+                        <a href="/Admin/Account" class="nav-link">
+                            <i class="far fa-circle nav-icon"></i>
+                            <p>Tài khoản</p>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="/Admin/Student" class="nav-link">
+                            <i class="far fa-circle nav-icon"></i>
+                            <p>Sinh viên</p>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="/Admin/Teacher" class="nav-link">
+                            <i class="far fa-circle nav-icon"></i>
+                            <p>Giảng viên</p>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="/Admin/Project" class="nav-link">
+                            <i class="far fa-circle nav-icon"></i>
+                            <p>Đồ án</p>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+            <li class="nav-item">
+                <a href="/Admin/Reminder" class="nav-link">
+                    <i class="nav-icon fas fa-th"></i>
+                    <p>
+                        Thông báo
+                        <span class="right badge badge-danger">New</span>
+                    </p>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#" class="nav-link">
+                    <i class="nav-icon fas fa-tachometer-alt"></i>
+                    <p>
+                        Chủ đề
+                        <i class="right fas fa-angle-left"></i>
+                    </p>
+                </a>
+                <ul class="nav nav-treeview">
+                    <li class="nav-item">
+                        <a href="/Admin/Topic" class="nav-link">
+                            <i class="far fa-circle nav-icon"></i>
+                            <p>Topic</p>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+            <li class="nav-item">
+                <a href="/Admin" class="nav-link">
+                    <i class="nav-icon fas fa-th"></i>
+                    <p>
+                        Hệ thống
+                    </p>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <!-- /.sidebar-menu -->
+</div>
+<!-- /.sidebar -->

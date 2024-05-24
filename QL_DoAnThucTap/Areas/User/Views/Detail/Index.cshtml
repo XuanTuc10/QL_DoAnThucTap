@@ -1,0 +1,338 @@
+﻿    @model X.PagedList.PagedList<QL_DoAnThucTap.Models.EF.Detail>
+    @using X.PagedList.Mvc.Core;
+    @using System.IO;
+    @inject Microsoft.AspNetCore.Hosting.IWebHostEnvironment WebHostEnvironment
+    @inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+@{
+    ViewBag.Title = "Chi tiết tiến trình";
+    var progress = ViewContext.HttpContext.Request.Query["progress"];
+    Layout = "~/Areas/User/Views/Shared/_Layout.cshtml";
+}
+<div class="container-xxl py-5 bg-primary hero-header">
+    <div class="container my-5 py-5 px-lg-5">
+        <div class="row g-5 py-5">
+            <div class="col-12 text-center">
+                <h1 class="text-white animated slideInDown">Project</h1>
+                <hr class="bg-white mx-auto mt-0" style="width: 90px;">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb justify-content-center">
+                        <li class="breadcrumb-item"><a class="text-white" href="#">Trang chủ</a></li>
+                        <li class="breadcrumb-item"><a class="text-white" href="#">Đồ án</a></li>
+                        <li class="breadcrumb-item"><a class="text-white" href="#">Tiến trình</a></li>
+                        <li class="breadcrumb-item text-white active" aria-current="page">Chi tiết</li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="container-xxl py-5">
+    <div class="container py-5 px-lg-5">
+        <div class="wow fadeInUp" data-wow-delay="0.1s">
+            <p class="section-title text-secondary justify-content-center"><span></span>Chi tiết tiến trình<span></span></p>
+        </div>
+        <div id="content">
+            @using (Html.BeginForm("Add", "Detail", FormMethod.Post, new { enctype = "multipart/form-data" }))
+            {
+                <div id="actions" class="row">
+                    <div class="col-lg-6">
+                        <div class="btn-group w-100">
+                            <input type="file" id="fileInput" multiple style="display: none;">
+                            <button type="button" class="btn btn-secondary py-sm-3 px-sm-5 rounded-pill me-3 animated slideInLeft" onclick="$('#fileInput').click();">
+                                <i class="fas fa-plus"></i>
+                                <span>Add files</span>
+                            </button>
+                            <button type="button" id="startUploadBtn" class="btn btn-light py-sm-3 px-sm-5 rounded-pill animated slideInRight">
+                                <i class="fas fa-upload"></i>
+                                <span>Start upload</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="table table-striped files" id="previews">
+                </div>
+            }
+            <h2>Flie(s)</h2>
+            <div class="card-body p-0">
+                <table>
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th>STT</th>
+                            <th>File Name</th>
+                            <th>File Size</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model != null && Model.Any())
+                        {
+                            var i = ((ViewBag.Page - 1) * ViewBag.PageSize) + 1;
+                            foreach (var item in Model)
+                            {
+                                string wwwrootPath = WebHostEnvironment.WebRootPath;
+                                string relativePath = item.FileUrl;
+                                string fullPath = System.IO.Path.Combine(wwwrootPath, relativePath);
+                                FileInfo fileInfo = new FileInfo(fullPath);
+                                long fileSizeInBytes = fileInfo.Length;
+                                string fileSize = FormatFileSize(fileSizeInBytes);
+                                string fileName = System.IO.Path.GetFileName(item.FileUrl);
+                                if (i % 2 == 0)
+                                {
+                                    <tr class="light" id="trow_@item.Id">
+                                        <td><input type="checkbox" id="cbkItem" value="@item.Id" /></td>
+                                        <td>@i</td>
+                                        <td>@fileName</td>
+                                        <td>@fileSize</td>
+                                        <td class="text-right py-0 align-middle">
+                                            <div class="btn-group btn-group-sm">
+                                                <a href="~/@item.FileUrl" class="btn btn-info"><i class="fas fa-eye"></i></a>
+                                                <a href="#" data-id="@item.Id" class="btn btn-danger btnDelete"><i class="fas fa-trash"></i></a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    i++;
+                                }
+                                else
+                                {
+                                    <tr class="dark" id="trow_@item.Id">
+                                        <td><input type="checkbox" id="cbkItem" value="@item.Id" /></td>
+                                        <td>@i</td>
+                                        <td>@fileName</td>
+                                        <td>@fileSize</td>
+                                        <td class="text-right py-0 align-middle">
+                                            <div class="btn-group btn-group-sm">
+                                                <a href="~/@item.FileUrl" class="btn btn-info"><i class="fas fa-eye"></i></a>
+                                                <a href="#" data-id="@item.Id" class="btn btn-danger btnDelete"><i class="fas fa-trash"></i></a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    i++;
+                                }
+
+                            }
+                        }
+                        else
+                        {
+                            <tr class="light">
+                                <td colspan="4">Không có bản ghi nào!!!</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+                <div class="card-footer">
+                    <div class="row">
+                        <div class="col-12" style="text-align: center;padding-top: 6px; padding-bottom: 6px;">
+                            @Html.PagedListPager(Model, page => Url.Action("Index", new { page, progress }))
+                        </div>
+                    </div>
+                </div>
+            </div>
+            @if (Model != null && Model.Any())
+            {
+                <div id="comments">
+
+                    <h2>Comments</h2>
+                    <ul class="commentlist">
+                        @foreach (var item in Model)
+                        {
+                            <li class="comment_odd">
+                                @if (item.Progress != null && item.Progress.Feedbacks != null && item.Progress.Feedbacks.Any())
+                                {
+                                    <!-- /.user-block -->
+                                    @foreach (var feedback in item.Progress.Feedbacks)
+                                    {
+
+                                        <div class="author"><img class="avatar" src="~/Content/layout/styles/images/avatar.gif" width="32" height="32" alt="" /><span class="name"><a href="#">A Name</a></span> <span class="wrote">wrote:</span></div>
+                                        <div class="submitdate"><a href="#">@feedback.Createtime</a></div>
+                                        <p>@feedback.FeedBack</p>
+
+                                    }
+                                    break;
+                                }
+                                else
+                                {
+                                    <p>No feedbacks available for this detail.</p>
+                                    break;
+                                }
+                            </li>
+                        }
+
+                    </ul>
+
+                </div>
+                @using (Html.BeginForm("FeedBack", "Detail", FormMethod.Post, new { id = "feedbackForm", enctype = "multipart/form-data" }))
+                {
+                    <div class="card card-info">
+                        <div class="card-header">
+                            <h3 class="card-title">Write A Feedback</h3>
+                        </div>
+                        <div class="card-body">
+                            @Html.TextArea("commentText", null, new { @class = "form-control form-control-sm", @placeholder = "New comment", id = "commentText" })
+                        </div>
+                        <div class="card-footer">
+                            <button type="button" class="btn btn-info btnFeedBack">Send</button>
+                        </div>
+                    </div>
+                    <div id="feedbackError" class="text-danger" style="display: none;"></div>
+                }
+            }
+        </div>
+    </div>
+</div>
+@section scripts {
+    <script>
+        $(document).ready(function () {
+            // Sự kiện khi ấn vào nút "Start upload"
+            $('#startUploadBtn').click(function () {
+                // Gọi hàm để thực hiện upload file
+                uploadFiles();
+            });
+
+            // Sự kiện khi thay đổi file trong input file
+            $('#fileInput').change(function () {
+                // Cập nhật giao diện hiển thị tên các file đã chọn
+                updateFileList(this.files);
+            });
+
+            // Hàm thực hiện upload file
+            function uploadFiles() {
+                var formData = new FormData();
+                var params = new URLSearchParams(window.location.search);
+                var id = params.get('progress'); // Chuyển đổi từ chuỗi sang số nguyên
+                formData.append('id', id);
+                // Lấy dữ liệu từ các file đã chọn và thêm vào FormData
+
+                for (var i = 0; i < filesArray.length; i++) {
+                    formData.append('filesArray', filesArray[i]);
+                }
+
+                // Gửi FormData thông qua AJAX request
+                $.ajax({
+                    url: '/User/Detail/Add',
+                    type: 'POST',
+                    data: formData,
+                    contentType: false,
+                    processData: false,
+                    success: function (response) {
+                        if (response.success) {
+                            alert("Bản ghi đã được thêm thành công.");
+                            window.location.href = response.redirectUrl; // Chuyển hướng về trang chủ
+                        } else {
+                            alert("Lỗi: " + response.error);
+                        }
+                    },
+                    error: function (xhr) {
+                        var errorMessage = "Có lỗi xảy ra trong quá trình xử lý yêu cầu.";
+                        alert("Lỗi: " + errorMessage);
+                    }
+                });
+            }
+
+            // Hàm cập nhật giao diện hiển thị tên các file đã chọn
+            function updateFileList(files) {
+                // Lặp qua từng file và hiển thị tên file trong giao diện
+                var fileList = $('#previews');
+                fileList.empty();
+                var updatedFiles = [];
+                filesArray = Array.from(files);
+                for (var i = 0; i < filesArray.length; i++) {
+                    var fileName = filesArray[i].name;
+                    var fileSize = formatFileSize(filesArray[i].size);
+                    var row = $('<div class="row mt-2"></div>');
+                    var colFileName = $('<div class="col">' + fileName + '</div>'); // Tạo cột cho tên file
+                    var colFileSize = $('<div class="col">' + fileSize + '</div>'); // Tạo cột cho tên file
+                    var colButton = $('<div class="col"></div>'); // Tạo cột cho nút xóa
+                    var button = $('<button class="btn btn-danger delete-file" data-file-name="' + fileName + '">Delete</button>');
+
+                    // Gắn sự kiện xóa cho nút xóa
+                    button.on('click', function () {
+                        // Xóa dòng chứa nút xóa được nhấn
+                        $(this).closest('.row').remove();
+                        // Xóa tệp khỏi danh sách files
+                        var fileNameToDelete = $(this).data('file-name');
+                        filesArray = filesArray.filter(function (file) {
+                            return file.name !== fileNameToDelete;
+                        });
+                    });
+
+                    colButton.append(button); // Thêm nút xóa vào cột
+                    row.append(colFileName); // Thêm cột cho tên file vào hàng
+                    row.append(colFileSize); // Thêm cột cho tên file vào hàng
+                    row.append(colButton); // Thêm cột cho nút xóa vào hàng
+                    fileList.append(row);
+                }
+            }
+            // Hàm chuyển đổi kích thước tệp thành đơn vị KB hoặc MB
+            function formatFileSize(sizeInBytes) {
+                var fileSize = sizeInBytes / 1024; // Chuyển đổi thành KB
+                if (fileSize >= 1024) {
+                    return (fileSize / 1024).toFixed(2) + ' MB';
+                } else {
+                    return fileSize.toFixed(2) + ' KB';
+                }
+            }
+            $('body').on('click', '.btnDelete', function () {
+                var id = $(this).data("id");
+                var conf = confirm("Bạn có muốn xóa bản ghi này không?");
+                if (conf == true) {
+                    $.ajax({
+                        url: '/User/Detail/Delete',
+                        type: 'POST',
+                        data: { id: id },
+                        success: function (rs) {
+                            if (rs.success) {
+                                $('#trow_' + id).remove();
+                                location.reload();
+                            }
+                        }
+                    });
+                }
+            });
+            $('body').on('click', '.btnFeedBack', function () {
+                var formData = new FormData();
+                var params = new URLSearchParams(window.location.search);
+                var id = params.get('progress'); // Lấy giá trị của tham số 'progress' từ URL
+                formData.append('id', id); // Thêm giá trị của 'progress' vào FormData
+                var commentText = $('#commentText').val();
+                formData.append('commenttext', commentText);
+                $.ajax({
+                    url: '@Url.Action("FeedBack", "Detail")',
+                    type: 'POST',
+                    data: formData,
+                    contentType: false,
+                    processData: false,
+                    success: function (response) {
+                        if (response.success) {
+                            window.location.href = response.redirectUrl; // Chuyển hướng về trang chủ
+                        } else {
+                            alert("Lỗi: " + response.error);
+                        }
+                    },
+                    error: function (xhr) {
+                        var errorMessage = "Có lỗi xảy ra trong quá trình xử lý yêu cầu.";
+                        alert("Lỗi: " + errorMessage);
+                    }
+                });
+            });
+
+        });
+        @functions {
+        public string FormatFileSize(long fileSizeInBytes)
+        {
+            const long scale = 1024;
+            string[] orders = new string[] { "GB", "MB", "KB", "Bytes" };
+            long max = (long)Math.Pow(scale, orders.Length - 1);
+            foreach (string order in orders)
+            {
+                if (fileSizeInBytes > max)
+                    return string.Format("{0:##.##} {1}", decimal.Divide(fileSizeInBytes, max), order);
+
+                max /= scale;
+            }
+            return "0 Bytes";
+        }
+    }
+
+</script>
+}

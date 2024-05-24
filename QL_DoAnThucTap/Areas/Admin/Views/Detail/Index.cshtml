@@ -1,0 +1,575 @@
+﻿    @model X.PagedList.PagedList<QL_DoAnThucTap.Models.EF.Detail>
+    @using X.PagedList.Mvc.Core;
+    @using System.IO;
+    @inject Microsoft.AspNetCore.Hosting.IWebHostEnvironment WebHostEnvironment
+    @inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+@{
+    ViewBag.Title = "Chi tiết";
+    var progress = ViewContext.HttpContext.Request.Query["progress"];
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+@section naviheader {
+    <!-- Left navbar links -->
+    <ul class="navbar-nav">
+        <li class="nav-item">
+            <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
+        </li>
+        <li class="nav-item d-none d-sm-inline-block">
+            <a href="@Url.Action("Index", "Home")" class="nav-link">Trang chủ</a>
+        </li>
+        <li class="nav-item d-none d-sm-inline-block">
+            <a href="@Url.Action("Index", "Project")" class="nav-link">Đồ án</a>
+        </li>
+        @if (Model != null && Model.Any())
+        {
+            foreach (var item in Model)
+            {
+                <li class="nav-item d-none d-sm-inline-block">
+                    <a href="@Url.Action("Index", "Progress", new { project = item.Progress.ProjectId })" class="nav-link">Tiến trình</a>
+                </li>
+                break;
+            }
+        }
+        <li class="nav-item d-none d-sm-inline-block">
+            <a href="#" class="nav-link">Chi tiết</a>
+        </li>
+    </ul>
+}
+
+<!-- Content Header (Page header) -->
+<section class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1>Chi tiết đồ án</h1>
+            </div>
+        </div>
+    </div><!-- /.container-fluid -->
+</section>
+
+<!-- Main content -->
+<section class="content">
+    <!-- Default box -->
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">Thông tin đồ án</h3>
+            <div class="card-tools">
+                <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
+                    <i class="fas fa-minus"></i>
+                </button>
+            </div>
+        </div>
+        <div class="card-body">
+            @using (Html.BeginForm("Add", "Detail", FormMethod.Post, new { enctype = "multipart/form-data" }))
+            {
+                <div id="actions" class="row">
+                    <div class="col-lg-6">
+                        <div class="btn-group w-100">
+                            <input type="file" id="fileInput" multiple style="display: none;">
+                            <button type="button" class="btn btn-success col" onclick="$('#fileInput').click();">
+                                <i class="fas fa-plus"></i>
+                                <span>Add files</span>
+                            </button>
+                            <button type="button" id="startUploadBtn" class="btn btn-primary col">
+                                <i class="fas fa-upload"></i>
+                                <span>Start upload</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="table table-striped files" id="previews">
+                </div>
+            }
+        </div>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-12 col-md-12 col-lg-8 order-2 order-md-1">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card card-info">
+                            <div class="card-header">
+                                <h3 class="card-title">Files</h3>
+                            </div>
+                            <div class="card-body p-0">
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th><input type="checkbox" id="SelectAll" /></th>
+                                            <th>STT</th>
+                                            <th>File Name</th>
+                                            <th>File Size</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @if (Model != null && Model.Any())
+                                        {
+                                            var i = ((ViewBag.Page - 1) * ViewBag.PageSize) + 1;
+                                            foreach (var item in Model)
+                                            {
+                                                string wwwrootPath = WebHostEnvironment.WebRootPath;
+                                                string relativePath = item.FileUrl;
+                                                string fullPath = System.IO.Path.Combine(wwwrootPath, relativePath);
+                                                FileInfo fileInfo = new FileInfo(fullPath);
+                                                long fileSizeInBytes = fileInfo.Length;
+                                                string fileSize = FormatFileSize(fileSizeInBytes);
+                                                string fileName = System.IO.Path.GetFileName(item.FileUrl);
+                                                <tr id="trow_@item.Id">
+                                                    <td><input type="checkbox" id="cbkItem" value="@item.Id" /></td>
+                                                    <td>@i</td>
+                                                    <td>@fileName</td>
+                                                    <td>@fileSize</td>
+                                                    <td class="text-right py-0 align-middle">
+                                                        <div class="btn-group btn-group-sm">
+                                                            <a href="~/@item.FileUrl" class="btn btn-info"><i class="fas fa-eye"></i></a>
+                                                            <a href="#" data-id="@item.Id" class="btn btn-danger btnDelete"><i class="fas fa-trash"></i></a>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                                i++;
+                                            }
+                                        }
+                                        else
+                                        {
+                                            <tr>
+                                                <td colspan="4">Không có bản ghi nào!!!</td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                                <div class="card-footer">
+                                    <div class="row">
+                                        <div class="col-12" style="text-align: center;">
+                                            @Html.PagedListPager(Model, page => Url.Action("Index", new { page, progress }))
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- /.card-body -->
+                        </div>
+                        @using (Html.BeginForm("FeedBack", "Detail", FormMethod.Post, new { id = "feedbackForm", enctype = "multipart/form-data" }))
+                        {
+                            <div class="card card-info">
+                                <div class="card-header">
+                                    <h3 class="card-title">News Feedback</h3>
+                                </div>
+                                <div class="card-body">
+                                    @Html.TextArea("commentText", null, new { @class = "form-control form-control-sm", @placeholder = "New comment", id = "commentText" })
+                                </div>
+                                <div class="card-footer">
+                                    <button type="button" class="btn btn-info btnFeedBack"><i class="fas fa-paper-plane"></i></button>
+                                </div>
+                            </div>
+                            <div id="feedbackError" class="text-danger" style="display: none;"></div>
+                        }
+
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="tab-content">
+                                    <div class="active tab-pane" id="activity">
+                                        <!-- Post -->
+                                        @if (Model != null && Model.Any())
+                                        {
+                                            <h4>Feedback</h4>
+
+                                            @foreach (var item in Model)
+                                            {
+                                                if (item.Progress != null && item.Progress.Feedbacks != null && item.Progress.Feedbacks.Any())
+                                                {
+                                                    int feedbackCount = 0;
+                                                    int feedbackLimit = 3;
+
+                                                    <!-- /.user-block -->
+                                                    @foreach (var feedback in item.Progress.Feedbacks.OrderByDescending(x => x.Createtime))
+                                                    {
+                                                        var feedbackId = $"feedback-{feedbackCount}";
+
+                                                        if (feedbackCount >= feedbackLimit)
+                                                        {
+                                                            <div id="moreFeedbacks" style="display: none;">
+                                                                @foreach (var moreFeedback in item.Progress.Feedbacks.OrderByDescending(x => x.Createtime).Skip(feedbackLimit))
+                                                                {
+                                                                    feedbackId = $"feedback-{feedbackCount}";
+                                                                    <div class="post">
+                                                                        <div class="user-block">
+                                                                            <img class="img-circle img-bordered-sm" src="/Content/client/dist/img/user1-128x128.jpg" alt="user image">
+                                                                            <span class="username">
+                                                                                <a href="#">User</a>
+                                                                                <a href="#" class="float-right btn-tool"><i class="fas fa-times"></i></a>
+                                                                            </span>
+                                                                            <span class="description" data-createtime="@moreFeedback.Createtime.ToString("o")"></span>
+                                                                        </div>
+                                                                        <p>@moreFeedback.FeedBack</p>
+                                                                        <p>
+                                                                            <a href="#" class="link-black text-sm mr-2"><i class="fas fa-share mr-1"></i> Share</a>
+                                                                            <a href="#" class="link-black text-sm"><i class="far fa-thumbs-up mr-1"></i> Like</a>
+                                                                            <span class="float-right">
+                                                                                <a href="javascript:void(0)" class="link-black text-sm comment-toggle" data-feedback-id="@feedbackId">
+                                                                                    <i class="far fa-comments mr-1"></i> Bình luận
+                                                                                </a>
+                                                                            </span>
+                                                                        </p>
+                                                                        <form class="form-horizontal comment-section" id="comment-section-@feedbackId" style="display: none;">
+                                                                            <div class="input-group input-group-sm mb-0 ">
+                                                                                <input class="form-control form-control-sm" placeholder="Phản hồi">
+                                                                                <div class="input-group-append">
+                                                                                    <button type="submit" class="btn btn-danger btnFeedBack">
+                                                                                        <i class="fas fa-paper-plane"></i>
+                                                                                    </button>
+                                                                                </div>
+                                                                            </div>
+                                                                        </form>
+                                                                    </div>
+                                                                    feedbackCount++;
+                                                                }
+                                                            </div>
+                                                            break;
+                                                        }
+
+                                                        <div class="post">
+                                                            <div class="user-block">
+                                                                <img class="img-circle img-bordered-sm" src="/Content/client/dist/img/user1-128x128.jpg" alt="user image">
+                                                                <span class="username">
+                                                                    <a href="#">User</a>
+                                                                    <a href="#" class="float-right btn-tool"><i class="fas fa-times"></i></a>
+                                                                </span>
+                                                                <span class="description" data-createtime="@feedback.Createtime.ToString("o")"></span>
+                                                            </div>
+                                                            <p>@feedback.FeedBack</p>
+                                                            <p>
+                                                                <a href="#" class="link-black text-sm mr-2"><i class="fas fa-share mr-1"></i> Share</a>
+                                                                <a href="#" class="link-black text-sm"><i class="far fa-thumbs-up mr-1"></i> Like</a>
+                                                                <span class="float-right">
+                                                                    <a href="javascript:void(0)" class="link-black text-sm comment-toggle" data-feedback-id="@feedbackId">
+                                                                        <i class="far fa-comments mr-1"></i> Bình luận
+                                                                    </a>
+                                                                </span>
+                                                            </p>
+                                                            <form class="form-horizontal comment-section" id="comment-section-@feedbackId" style="display: none;">
+                                                                <div class="input-group input-group-sm mb-0 ">
+                                                                    <input class="form-control form-control-sm" placeholder="Phản hồi">
+                                                                    <div class="input-group-append">
+                                                                        <button type="submit" class="btn btn-danger btnFeedBack">
+                                                                            <i class="fas fa-paper-plane"></i>
+                                                                        </button>
+                                                                    </div>
+                                                                </div>
+                                                            </form>
+                                                        </div>
+
+                                                        feedbackCount++;
+                                                    }
+
+                                                    if (item.Progress.Feedbacks.Count() > feedbackLimit)
+                                                    {
+                                                        <div id="feedbackButtons">
+                                                            <div class="post">
+                                                                <button id="showMoreFeedbacks" class="btn btn-primary"><i class="fas fa-chevron-down"></i> Show more</button>
+                                                            </div>
+                                                            <div class="post">
+                                                                <button id="showLessFeedbacks" class="btn btn-primary" style="display: none;"><i class="fas fa-chevron-up"></i> Show less</button>
+                                                            </div>
+                                                        </div>
+                                                    }
+                                                    break;
+                                                }
+                                                else
+                                                {
+                                                    <p>No feedbacks available for this detail.</p>
+                                                    break;
+                                                }
+                                            }
+                                        }
+                                        <!-- /.post -->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-md-12 col-lg-4 order-1 order-md-2">
+                @if (Model != null && Model.Any())
+                {
+                    foreach (var item in Model)
+                    {
+                        <h3 class="text-primary"><i class="fas fa-paint-brush"></i>@item.Progress.Title</h3>
+                        <p class="text-muted"></p>
+                        <br>
+                        <div class="text-muted">
+                            <p class="text-sm">
+                                Họ tên sinh viên:
+                                <b class="d-block">@item.Progress.Project.Student.Name</b>
+                            </p>
+                            <p class="text-sm">
+                                Giáo viên hướng dẫn:
+                                <b class="d-block">@item.Progress.Project.Teacher.Name</b>
+                            </p>
+                        </div>
+                        break;
+                    }
+                }
+            </div>
+        </div>
+    </div>
+    <!-- /.card-body -->
+    <!-- /.card -->
+</section>
+<!-- /.content -->
+@section scripts {
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const descriptions = document.querySelectorAll('.description');
+            document.querySelectorAll('.comment-toggle').forEach(function (element) {
+                element.addEventListener('click', function () {
+                    var feedbackId = this.getAttribute('data-feedback-id');
+                    var commentSection = document.getElementById('comment-section-' + feedbackId);
+                    if (commentSection.style.display === 'none') {
+                        commentSection.style.display = 'block';
+                    } else {
+                        commentSection.style.display = 'none';
+                    }
+                });
+            });
+
+            document.getElementById('showMoreFeedbacks').addEventListener('click', function () {
+                document.getElementById('moreFeedbacks').style.display = 'block';
+                document.getElementById('showMoreFeedbacks').style.display = 'none';
+                document.getElementById('showLessFeedbacks').style.display = 'inline';
+            });
+
+            document.getElementById('showLessFeedbacks').addEventListener('click', function () {
+                document.getElementById('moreFeedbacks').style.display = 'none';
+                document.getElementById('showMoreFeedbacks').style.display = 'inline';
+                document.getElementById('showLessFeedbacks').style.display = 'none';
+            });
+            descriptions.forEach(function (description) {
+                const createTime = new Date(description.getAttribute('data-createtime'));
+                const currentTime = new Date();
+                const difference = currentTime - createTime;
+
+                let timeDifferenceText = '';
+                const differenceInMinutes = Math.floor(difference / (1000 * 60));
+                const differenceInHours = Math.floor(difference / (1000 * 60 * 60));
+                const differenceInDays = Math.floor(difference / (1000 * 60 * 60 * 24));
+
+                if (differenceInDays >= 1) {
+                    timeDifferenceText = `${differenceInDays} days ago`;
+                } else if (differenceInHours >= 1) {
+                    timeDifferenceText = `${differenceInHours} hours ago`;
+                } else {
+                    timeDifferenceText = `${differenceInMinutes} minutes ago`;
+                }
+
+                description.textContent = timeDifferenceText;
+            });
+        });
+        $(document).ready(function () {
+            // Sự kiện khi ấn vào nút "Start upload"
+            $('#startUploadBtn').click(function () {
+                // Gọi hàm để thực hiện upload file
+                uploadFiles();
+            });
+
+            // Sự kiện khi thay đổi file trong input file
+            $('#fileInput').change(function () {
+                // Cập nhật giao diện hiển thị tên các file đã chọn
+                updateFileList(this.files);
+            });
+
+            // Hàm thực hiện upload file
+            function uploadFiles() {
+                var formData = new FormData();
+                var params = new URLSearchParams(window.location.search);
+                var id = params.get('progress'); // Chuyển đổi từ chuỗi sang số nguyên
+                formData.append('id', id);
+                // Lấy dữ liệu từ các file đã chọn và thêm vào FormData
+
+                for (var i = 0; i < filesArray.length; i++) {
+                    formData.append('filesArray', filesArray[i]);
+                }
+
+                // Gửi FormData thông qua AJAX request
+                $.ajax({
+                    url: '/Admin/Detail/Add',
+                    type: 'POST',
+                    data: formData,
+                    contentType: false,
+                    processData: false,
+                    success: function (response) {
+                        if (response.success) {
+                            alert("Bản ghi đã được thêm thành công.");
+                            window.location.href = response.redirectUrl; // Chuyển hướng về trang chủ
+                        } else {
+                            alert("Lỗi: " + response.error);
+                        }
+                    },
+                    error: function (xhr) {
+                        var errorMessage = "Có lỗi xảy ra trong quá trình xử lý yêu cầu.";
+                        alert("Lỗi: " + errorMessage);
+                    }
+                });
+            }
+
+            // Hàm cập nhật giao diện hiển thị tên các file đã chọn
+            function updateFileList(files) {
+                // Lặp qua từng file và hiển thị tên file trong giao diện
+                var fileList = $('#previews');
+                fileList.empty();
+                var updatedFiles = [];
+                filesArray = Array.from(files);
+                for (var i = 0; i < filesArray.length; i++) {
+                    var fileName = filesArray[i].name;
+                    var fileSize = formatFileSize(filesArray[i].size);
+                    var row = $('<div class="row mt-2"></div>');
+                    var colFileName = $('<div class="col">' + fileName + '</div>'); // Tạo cột cho tên file
+                    var colFileSize = $('<div class="col">' + fileSize + '</div>'); // Tạo cột cho tên file
+                    var colButton = $('<div class="col"></div>'); // Tạo cột cho nút xóa
+                    var button = $('<button class="btn btn-danger delete-file" data-file-name="' + fileName + '">Delete</button>');
+
+                    // Gắn sự kiện xóa cho nút xóa
+                    button.on('click', function () {
+                        // Xóa dòng chứa nút xóa được nhấn
+                        $(this).closest('.row').remove();
+                        // Xóa tệp khỏi danh sách files
+                        var fileNameToDelete = $(this).data('file-name');
+                        filesArray = filesArray.filter(function (file) {
+                            return file.name !== fileNameToDelete;
+                        });
+                    });
+
+                    colButton.append(button); // Thêm nút xóa vào cột
+                    row.append(colFileName); // Thêm cột cho tên file vào hàng
+                    row.append(colFileSize); // Thêm cột cho tên file vào hàng
+                    row.append(colButton); // Thêm cột cho nút xóa vào hàng
+                    fileList.append(row);
+                }
+            }
+            // Hàm chuyển đổi kích thước tệp thành đơn vị KB hoặc MB
+            function formatFileSize(sizeInBytes) {
+                var fileSize = sizeInBytes / 1024; // Chuyển đổi thành KB
+                if (fileSize >= 1024) {
+                    return (fileSize / 1024).toFixed(2) + ' MB';
+                } else {
+                    return fileSize.toFixed(2) + ' KB';
+                }
+            }
+            $('body').on('change', '#SelectAll', function () {
+                var checkStatus = this.checked;
+                var checkbox = $(this).parents('.card-body').find('tr td input:checkbox');
+                checkbox.each(function () {
+                    this.checked = checkStatus;
+                    if (this.checked) {
+                        checkbox.attr('selected', 'checked');
+                    } else {
+                        checkbox.attr('selected', '');
+                    }
+                });
+            });
+            $('body').on('click', '#BtnDeleteAll', function (e) {
+                e.preventDefault();
+                var str = "";
+                var checkbox = $(this).parents('.card').find('tr td input:checkbox');
+                var i = 0;
+                checkbox.each(function () {
+                    if (this.checked) {
+                        checkbox.attr('selected', 'checked');
+                        var _id = $(this).val();
+                        if (i === 0) {
+                            str += _id;
+                        } else {
+                            str += "," + _id;
+                        }
+                        i++;
+                    } else {
+                        checkbox.attr('selected', '');
+                    }
+                });
+                if (str.length > 0) {
+                    var conf = confirm('Bạn có muốn xóa các bản ghi này?');
+                    if (conf == true) {
+                        $.ajax({
+                            url: '/Admin/Detail/DeleteAll',
+                            type: 'POST',
+                            data: { ids: str },
+                            success: function (rs) {
+                                if (rs.success) {
+                                    location.reload();
+                                }
+                            }
+                        });
+                    }
+                }
+
+            });
+            $('body').on('click', '.btnDelete', function () {
+                var id = $(this).data("id");
+                var conf = confirm("Bạn có muốn xóa bản ghi này không?");
+                if (conf == true) {
+                    $.ajax({
+                        url: '/Admin/Detail/Delete',
+                        type: 'POST',
+                        data: { id: id },
+                        success: function (rs) {
+                            if (rs.success) {
+                                $('#trow_' + id).remove();
+                                location.reload();
+                            }
+                        }
+                    });
+                }
+            });
+
+            $('body').on('click', '.btnFeedBack', function () {
+                var form = $('#feedbackForm')[0];
+                var formData = new FormData(form);
+
+                var params = new URLSearchParams(window.location.search);
+                var id = params.get('progress'); // Lấy giá trị của tham số 'progress' từ URL
+                formData.append('id', id); // Thêm giá trị của 'progress' vào FormData
+
+                // Lấy nội dung từ CKEditor và thêm vào formData
+                var commentText = $("#commentText").val();
+                formData.append('commentText', commentText); // Đảm bảo tên trường là 'commentText'
+
+                $.ajax({
+                    url: '@Url.Action("FeedBack", "Detail")',
+                    type: 'POST',
+                    data: formData,
+                    contentType: false,
+                    processData: false,
+                    success: function (response) {
+                        if (response.success) {
+                            window.location.href = response.redirectUrl; // Chuyển hướng về trang chi tiết
+                        } else {
+                            $('#feedbackError').text("Lỗi: " + response.error).show();
+                        }
+                    },
+                    error: function (xhr) {
+                        var errorMessage = "Có lỗi xảy ra trong quá trình xử lý yêu cầu.";
+                        $('#feedbackError').text("Lỗi: " + errorMessage).show();
+                    }
+                });
+            });
+
+        });
+        @functions {
+        public string FormatFileSize(long fileSizeInBytes)
+        {
+            const long scale = 1024;
+            string[] orders = new string[] { "GB", "MB", "KB", "Bytes" };
+            long max = (long)Math.Pow(scale, orders.Length - 1);
+            foreach (string order in orders)
+            {
+                if (fileSizeInBytes > max)
+                    return string.Format("{0:##.##} {1}", decimal.Divide(fileSizeInBytes, max), order);
+
+                max /= scale;
+            }
+            return "0 Bytes";
+        }
+    }
+
+</script>
+}

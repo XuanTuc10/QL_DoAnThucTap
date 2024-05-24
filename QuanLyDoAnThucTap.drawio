@@ -1,0 +1,49 @@
+<mxfile host="app.diagrams.net" modified="2024-04-07T12:07:07.710Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36" etag="hI3dUqB4jUxPiJ-TKxLc" version="24.0.1" type="device">
+  <diagram name="Trang-1" id="4lJpOAyZSYY-LO97WgNw">
+    <mxGraphModel dx="714" dy="383" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" background="#000033" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="9UsNdUumOEOGNvNzxIiE-1" value="Quản Lý Đồ Án Thực Tập" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FF66FF;strokeColor=#FFFFFF;fontColor=#FFFFFF;" vertex="1" parent="1">
+          <mxGeometry x="360" y="30" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="9UsNdUumOEOGNvNzxIiE-3" value="SinhVien" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FF66FF;strokeColor=#FFFFFF;fontColor=#FFFFFF;" vertex="1" parent="1">
+          <mxGeometry x="360" y="114" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="9UsNdUumOEOGNvNzxIiE-4" value="ADMIN" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FF66FF;strokeColor=#FFFFFF;fontColor=#FFFFFF;" vertex="1" parent="1">
+          <mxGeometry x="200" y="114" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="9UsNdUumOEOGNvNzxIiE-5" value="GiaoVien" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FF66FF;strokeColor=#FFFFFF;fontColor=#FFFFFF;" vertex="1" parent="1">
+          <mxGeometry x="515" y="117" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="9UsNdUumOEOGNvNzxIiE-6" value="Quản lý đồ án" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FF66FF;strokeColor=#FFFFFF;fontColor=#FFFFFF;" vertex="1" parent="1">
+          <mxGeometry x="196" y="194" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="9UsNdUumOEOGNvNzxIiE-7" value="Quản lý tài khoản&amp;nbsp;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FF66FF;strokeColor=#FFFFFF;fontColor=#FFFFFF;" vertex="1" parent="1">
+          <mxGeometry x="200" y="274" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="9UsNdUumOEOGNvNzxIiE-8" value="Quản lý nội dung" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FF66FF;strokeColor=#FFFFFF;fontColor=#FFFFFF;" vertex="1" parent="1">
+          <mxGeometry x="200" y="354" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="9UsNdUumOEOGNvNzxIiE-11" value="Quản lý thông tin" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FF66FF;strokeColor=#FFFFFF;fontColor=#FFFFFF;" vertex="1" parent="1">
+          <mxGeometry x="360" y="194" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="9UsNdUumOEOGNvNzxIiE-12" value="Quản lý đồ án" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FF66FF;strokeColor=#FFFFFF;fontColor=#FFFFFF;" vertex="1" parent="1">
+          <mxGeometry x="360" y="274" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="9UsNdUumOEOGNvNzxIiE-13" value="Quản lý nội dung comment" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FF66FF;strokeColor=#FFFFFF;fontColor=#FFFFFF;" vertex="1" parent="1">
+          <mxGeometry x="360" y="354" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="9UsNdUumOEOGNvNzxIiE-15" value="Quản lý thông tin" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FF66FF;strokeColor=#FFFFFF;fontColor=#FFFFFF;" vertex="1" parent="1">
+          <mxGeometry x="515" y="194" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="9UsNdUumOEOGNvNzxIiE-16" value="Quản lý đồ án" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FF66FF;strokeColor=#FFFFFF;fontColor=#FFFFFF;" vertex="1" parent="1">
+          <mxGeometry x="515" y="274" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="9UsNdUumOEOGNvNzxIiE-17" value="Quản lý nội dung comment" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FF66FF;strokeColor=#FFFFFF;fontColor=#FFFFFF;" vertex="1" parent="1">
+          <mxGeometry x="515" y="354" width="120" height="60" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

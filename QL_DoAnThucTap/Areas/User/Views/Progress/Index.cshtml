@@ -1,0 +1,71 @@
+﻿ @model X.PagedList.PagedList<QL_DoAnThucTap.Models.EF.Progress>
+    @using X.PagedList.Mvc.Core;
+@{
+    ViewBag.Title = "Tiến trình";
+    Layout = "~/Areas/User/Views/Shared/_Layout.cshtml";
+}
+<div class="container-xxl py-5 bg-primary hero-header">
+    <div class="container my-5 py-5 px-lg-5">
+        <div class="row g-5 py-5">
+            <div class="col-12 text-center">
+                <h1 class="text-white animated slideInDown">Tiến trình đồ án</h1>
+                <hr class="bg-white mx-auto mt-0" style="width: 90px;">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb justify-content-center">
+                        <li class="breadcrumb-item"><a class="text-white" href="#">Trang chủ</a></li>
+                        <li class="breadcrumb-item"><a class="text-white" href="#">Đồ án</a></li>
+                        <li class="breadcrumb-item text-white active" aria-current="page">Tiến trình</li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Projects Start -->
+<div class="container-xxl py-5">
+    <div class="container py-5 px-lg-5">
+        <div class="wow fadeInUp" data-wow-delay="0.1s">
+            <p class="section-title text-secondary justify-content-center"><span></span>Tiến trình<span></span></p>
+            <h1 class="text-center mb-5">Tiến trình gần đây</h1>
+        </div>
+        <div class="row mt-n2 wow fadeInUp" data-wow-delay="0.3s">
+            <div class="col-12 text-center">
+                <ul class="list-inline mb-5" id="portfolio-flters">
+                    <li class="mx-2 active" data-filter="*">All</li>
+                    <li class="mx-2" data-filter=".true">Hoàn thành</li>
+                    <li class="mx-2" data-filter=".false">Chưa hoàn thành</li>
+                </ul>
+            </div>
+        </div>
+        <div class="row g-4 portfolio-container">
+
+            @if (Model != null && Model.Any())
+            {
+                foreach (var item in Model)
+                {
+                    <div class="col-lg-4 col-md-6 portfolio-item @item.IsActive.ToString().ToLower() wow fadeInUp" data-wow-delay="0.1s">
+                        <div class="rounded overflow-hidden">
+                            <div class="position-relative overflow-hidden">
+                                <img class="img-fluid w-100" src="~/Content/user/lib/img/portfolio-2.jpg" alt="">
+                                <div class="portfolio-overlay">
+                                    <a class="btn btn-square btn-outline-light mx-1" href="/User/Detail?progress=@item.Id"><i class="fa fa-eye"></i></a>
+                                    <a class="btn btn-square btn-outline-light mx-1" href="/User/Detail"><i class="fa fa-link"></i></a>
+                                </div>
+                            </div>
+                            <div class="bg-light p-4">
+                                <p class="text-primary fw-medium mb-2">@item.Project.Name</p>
+                                <h5 class="lh-base mb-0">@item.Title</h5>
+                            </div>
+                        </div>
+                    </div>
+                }
+            }
+            else
+            {
+                <h5 class="lh-base mb-0">None Document</h5>
+            }
+
+        </div>
+    </div>
+</div>
+<!-- Projects End -->

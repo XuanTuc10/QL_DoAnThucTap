@@ -1,0 +1,83 @@
+﻿ @model X.PagedList.PagedList<QL_DoAnThucTap.Models.EF.Reminder>
+    @using X.PagedList.Mvc.Core;
+@{
+    ViewBag.Title = "Đồ án";
+    Layout = "~/Areas/User/Views/Shared/_Layout.cshtml";
+}
+<div class="container-xxl bg-primary hero-header">
+    <div class="container px-lg-5">
+        <div class="row g-5 align-items-center">
+            <div class="col-lg-6 text-center text-lg-start">
+                <h1 class="text-white mb-4 animated slideInDown">Quản lý tiền trình làm đồ án</h1>
+            </div>
+            <div class="col-lg-6 text-center text-lg-start">
+                <img class="img-fluid animated zoomIn" src="~/Content/user/lib/img/hero1.png" alt="">
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Service Start -->
+<div class="container-xxl py-5">
+    <div class="container py-5 px-lg-5">
+        <div class="wow fadeInUp" data-wow-delay="0.1s">
+            <p class="section-title text-secondary justify-content-center"><span></span>Thông báo<span></span></p>
+            <h1 class="text-center mb-5">News Reminder</h1>
+        </div>
+
+        <div class="row g-4">
+            @if (Model != null && Model.Any())
+            {
+                foreach (var item in Model)
+                {
+                    <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.1s">
+                        <div class="service-item d-flex flex-column text-center rounded">
+                            <p class="description text-start" data-createtime="@item.Createtime.ToString("o")">
+                            </p>
+                            <div class="service-icon flex-shrink-0">
+                                <i class="fa fa-mail-bulk fa-2x"></i>
+                            </div>
+                            <h5 class="mb-3">@item.Title</h5>
+                            <p class="m-0">@item.ShortContent</p>
+                            
+                            <a class="btn btn-square" href="/User/Reminder"><i class="fa fa-arrow-right"></i></a>
+                        </div>
+                    </div>
+                }
+            }
+            else
+            {
+                <h5 class="lh-base mb-0">Chưa có thông báo mới</h5>
+            }
+        </div>
+    </div>
+</div>
+<!-- Service End -->
+@section scripts {
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const descriptions = document.querySelectorAll('.description');
+
+            descriptions.forEach(function (description) {
+                const createTime = new Date(description.getAttribute('data-createtime'));
+                const currentTime = new Date();
+                const difference = currentTime - createTime;
+
+                let timeDifferenceText = '';
+                const differenceInMinutes = Math.floor(difference / (1000 * 60));
+                const differenceInHours = Math.floor(difference / (1000 * 60 * 60));
+                const differenceInDays = Math.floor(difference / (1000 * 60 * 60 * 24));
+
+                if (differenceInDays >= 1) {
+                    timeDifferenceText = `${differenceInDays} days ago`;
+                } else if (differenceInHours >= 1) {
+                    timeDifferenceText = `${differenceInHours} hours ago`;
+                } else {
+                    timeDifferenceText = `${differenceInMinutes} minutes ago`;
+                }
+
+                description.textContent = timeDifferenceText;
+            });
+        });
+    </script>
+}
