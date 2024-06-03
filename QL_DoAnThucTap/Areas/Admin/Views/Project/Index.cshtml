@@ -38,12 +38,9 @@
 
 <!-- Main content -->
 <section class="content">
-
     <!-- Default box -->
     <div class="card">
         <div class="card-header">
-            <h3 class="card-title">Quản lý đồ án</h3>
-
             <div class="card-tools">
                 <a href="/Admin/Project/Add" class="btn btn-primary">Create</a>
                 <a href="#" class="btn btn-danger" id="BtnDeleteAll">Delete All</a>
@@ -51,60 +48,72 @@
         </div>
         <div class="card-body">
             <div class="row">
-                <div class="col-6">
-                    @using (Html.BeginForm("Index", "Project", FormMethod.Get, new { }))
-                    {
-                        <div class="input-group input-group-sm">
-                            @Html.TextBox("Searchtext", null, new { @class = "form-control" })
-                            <span class="input-group-append">
-                                <button type="submit" class="btn btn-info btn-flat">Search</button>
-                            </span>
-                        </div>
-                    }
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-tools">
+                            @using (Html.BeginForm("Index", "Project", FormMethod.Get, new { }))
+                            {
+                                    <div class="input-group input-group-sm">
+                                    @Html.TextBox("Searchtext", null, new { @class = "form-control" })
+                                        <span class="input-group-append">
+                                            <button type="submit" class="btn btn-info btn-flat"><i class="fas fa-search"></i></button>
+                                        </span>
+                                    </div>
+                            }
 
+                            </div>
+                        </div>
+                        <div class="card-body table-responsive p-0">
+                            <table class="table table-hover text-nowrap">
+                                <thead>
+                                    <tr>
+                                        <th><input type="checkbox" id="SelectAll" /></th>
+                                        <th>STT</th>
+                                        <th>Tên đồ án</th>
+                                        <th>Sinh viên</th>
+                                        <th>Giáo viên hướng dẫn</th>
+                                        <th>Thời gian tạo</th>
+                                        <th>Thời gian câp nhật</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                            @if (Model != null && Model.Any())
+                            {
+                                var i = ((ViewBag.Page - 1) * ViewBag.PageSize) + 1;
+                                foreach (var item in Model)
+                                {
+                                        <tr id="trow_@item.Id">
+                                            <td><input type="checkbox" id="cbkItem" value="@item.Id" /></td>
+                                            <td>@i</td>
+                                            <td>@item.Name</td>
+                                            <td>@item.Student.Name</td>
+                                            <td>@item.Teacher.Name</td>
+                                            <td>@item.CreateDate.ToString("dd/MM/yyyy")</td>
+                                            <td>@item.UpdateDate.ToString("dd/MM/yyyy")</td>
+                                            <td>
+                                                <a href="/Admin/Project/Edit/@item.Id" class="btn btn-sm btn-primary">Update</a> |
+                                                <a href="#" data-id="@item.Id" class="btn btn-sm btn-danger btnDelete">Delete</a> |
+                                                <a href="@Url.Action("Index", "Progress", new { project = item.Id })" class="btn btn-sm btn-info btnDetail">Tiến trình</a>
+                                            </td>
+                                        </tr>
+                                    i++;
+                                }
+                            }
+                            else
+                            {
+                                    <tr>
+                                        <td colspan="4">Không có bản ghi nào!!!</td>
+                                    </tr>
+                            }
+                            </table>
+                        </div>
+                    </div>
                 </div>
             </div>
-            <table class="table table-hover">
-                <thead>
-                    <tr>
-                        <th><input type="checkbox" id="SelectAll" /></th>
-                        <th>STT</th>
-                        <th>Tên đồ án</th>
-                        <th>Thời gian tạo</th>
-                        <th>Thời gian câp nhật</th>
-                        <th></th>
-                    </tr>
-                </thead>
-                @if (Model != null && Model.Any())
-                {
-                    var i = ((ViewBag.Page - 1) * ViewBag.PageSize) + 1;
-                    foreach (var item in Model)
-                    {
-                        <tr id="trow_@item.Id">
-                            <td><input type="checkbox" id="cbkItem" value="@item.Id" /></td>
-                            <td>@i</td>
-                            <td>@item.Name</td>
-                            <td>@item.CreateDate.ToString("dd/MM/yyyy")</td>
-                            <td>@item.UpdateDate.ToString("dd/MM/yyyy")</td>
-                            <td>
-                                <a href="/Admin/Project/Edit/@item.Id" class="btn btn-sm btn-primary">Update</a> |
-                                <a href="#" data-id="@item.Id" class="btn btn-sm btn-danger btnDelete">Delete</a> |
-                                <a href="@Url.Action("Index", "Progress", new { project = item.Id })" class="btn btn-sm btn-info btnDetail">Tiến trình</a>
-                            </td>
-                        </tr>
-                        i++;
-                    }
-                }
-                else
-                {
-                    <tr>
-                        <td colspan="4">Không có bản ghi nào!!!</td>
-                    </tr>
-                }
-            </table>
             <div class="row">
                 <div class="col-12" style="text-align: center;">
-                    @Html.PagedListPager(Model, page => Url.Action("Index", new { page }))
+                @Html.PagedListPager(Model, page => Url.Action("Index", new { page }))
                 </div>
             </div>
         </div>

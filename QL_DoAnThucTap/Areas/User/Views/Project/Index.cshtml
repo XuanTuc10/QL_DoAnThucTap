@@ -71,7 +71,9 @@
                             </div>
                             <div class="bg-light p-4">
                                 <p class="text-primary fw-medium mb-2">@item.Topic.Name</p>
-                                <h5 class="lh-base mb-0">@item.Name</h5>
+                                <h5 class="lh-base mb-0" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                                    @item.Name
+                                </h5>
                                 <p class="lh-base mb-0">Sinh viên: @item.Student.Name</p>
                                 <p class="lh-base mb-0">Người hướng dẫn: @item.Teacher.Name</p>
                             </div>

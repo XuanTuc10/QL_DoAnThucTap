@@ -143,7 +143,7 @@
                     var conf = confirm('Bạn có muốn xóa các bản ghi này?');
                     if (conf == true) {
                         $.ajax({
-                            url: '/Admin/BaiViet/DeleteAll',
+                            url: '/Admin/Student/DeleteAll',
                             type: 'POST',
                             data: { ids: str },
                             success: function (rs) {
@@ -173,7 +173,7 @@
                 var conf = confirm("Bạn có muốn xóa bản ghi này không?");
                 if (conf == true) {
                     $.ajax({
-                        url: '/Admin/BaiViet/Delete',
+                        url: '/Admin/Student/Delete',
                         type: 'POST',
                         data: { id: id },
                         success: function (rs) {

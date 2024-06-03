@@ -24,9 +24,7 @@
     <div class="row align-items-center flex-row-reverse">
         <div class="col-lg-6">
             <div class="about-text go-to">
-                <h3 class="dark-color">About Me</h3>
-                <h6 class="theme-color lead">A Lead UX &amp; UI designer based in Canada</h6>
-                <p>I <mark>design and develop</mark> services for customers of all sizes, specializing in creating stylish, modern websites, web services and online stores. My passion is to design digital user experiences through the bold interface and meaningful interactions.</p>
+                <h3 class="dark-color">Thông tin người dùng:</h3>
                 @if (User.IsInRole("003"))
                 {
                     <div class="row about-list">
@@ -83,34 +81,162 @@
             <div class="about-avatar">
                 <img src="https://bootdey.com/img/Content/avatar/avatar7.png" title="" alt="">
             </div>
+            <button type="button" id="changePasswordButton" class="btn btn-primary">
+                Đổi mật khẩu
+            </button>
         </div>
     </div>
-    <div class="counter">
-        <div class="row">
-            <div class="col-6 col-lg-3">
-                <div class="count-data text-center">
-                    <h6 class="count h2" data-to="500" data-speed="500">500</h6>
-                    <p class="m-0px font-w-600">Happy Clients</p>
+
+    <!-- Modal -->
+    <div class="modal fade" id="changePasswordModal" tabindex="-1" aria-labelledby="changePasswordModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="changePasswordModalLabel">Đổi mật khẩu</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
                 </div>
-            </div>
-            <div class="col-6 col-lg-3">
-                <div class="count-data text-center">
-                    <h6 class="count h2" data-to="150" data-speed="150">150</h6>
-                    <p class="m-0px font-w-600">Project Completed</p>
-                </div>
-            </div>
-            <div class="col-6 col-lg-3">
-                <div class="count-data text-center">
-                    <h6 class="count h2" data-to="850" data-speed="850">850</h6>
-                    <p class="m-0px font-w-600">Photo Capture</p>
-                </div>
-            </div>
-            <div class="col-6 col-lg-3">
-                <div class="count-data text-center">
-                    <h6 class="count h2" data-to="190" data-speed="190">190</h6>
-                    <p class="m-0px font-w-600">Telephonic Talk</p>
+                <div class="modal-body">
+                    <!-- Đặt form đổi mật khẩu ở đây -->
+                    @using (Html.BeginForm("ChangePassword", "Account", FormMethod.Post, new { id = "changePasswordForm" }))
+                    {
+                        @Html.AntiForgeryToken()
+                        @Html.ValidationSummary(true)
+                        @Html.HiddenFor(x => x.Id)
+                        <div class="form-group">
+                            <label for="currentPassword">Mật khẩu hiện tại</label>
+                            <div class="input-group">
+                                <input type="password" class="form-control" id="currentPassword" name="currentPassword" required>
+                                <div class="input-group-append">
+                                    <span class="input-group-text">
+                                        <i class="fa fa-eye-slash" id="toggleCurrentPassword" style="cursor: pointer;"></i>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="newPassword">Mật khẩu mới</label>
+                            <div class="input-group">
+                                <input type="password" class="form-control" id="newPassword" name="newPassword" required>
+                                <div class="input-group-append">
+                                    <span class="input-group-text">
+                                        <i class="fa fa-eye-slash" id="toggleNewPassword" style="cursor: pointer;"></i>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="confirmPassword">Xác nhận mật khẩu mới</label>
+                            <div class="input-group">
+                                <input type="password" class="form-control" id="confirmPassword" name="confirmPassword" required>
+                                <div class="input-group-append">
+                                    <span class="input-group-text">
+                                        <i class="fa fa-eye-slash" id="toggleConfirmPassword" style="cursor: pointer;"></i>
+                                    </span>
+                                </div>
+                            </div>
+                            <!-- Thêm phần hiển thị thông báo lỗi -->
+                            <div id="passwordError" class="text-danger" style="display: none;"></div>
+                        </div>
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-primary">Xác nhận</button>
+                        </div>
+                    }
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+@section scripts {
+    <script>
+        document.getElementById('toggleCurrentPassword').addEventListener('click', function () {
+            var currentPassword = document.getElementById('currentPassword');
+            if (currentPassword.type === 'password') {
+                currentPassword.type = 'text';
+                this.classList.remove('fa-eye-slash');
+                this.classList.add('fa-eye');
+            } else {
+                currentPassword.type = 'password';
+                this.classList.remove('fa-eye');
+                this.classList.add('fa-eye-slash');
+            }
+        });
+
+        document.getElementById('toggleNewPassword').addEventListener('click', function () {
+            var newPassword = document.getElementById('newPassword');
+            if (newPassword.type === 'password') {
+                newPassword.type = 'text';
+                this.classList.remove('fa-eye-slash');
+                this.classList.add('fa-eye');
+            } else {
+                newPassword.type = 'password';
+                this.classList.remove('fa-eye');
+                this.classList.add('fa-eye-slash');
+            }
+        });
+
+        document.getElementById('toggleConfirmPassword').addEventListener('click', function () {
+            var confirmPassword = document.getElementById('confirmPassword');
+            if (confirmPassword.type === 'password') {
+                confirmPassword.type = 'text';
+                this.classList.remove('fa-eye-slash');
+                this.classList.add('fa-eye');
+            } else {
+                confirmPassword.type = 'password';
+                this.classList.remove('fa-eye');
+                this.classList.add('fa-eye-slash');
+            }
+        });
+        $('#changePasswordModal').on('hidden.bs.modal', function () {
+            $('#changePasswordForm')[0].reset();
+        });
+        $(document).ready(function () {
+            // Khi nút "Đổi mật khẩu" được nhấn, modal sẽ hiển thị
+            $("#changePasswordButton").click(function () {
+                $("#changePasswordModal").modal('show');
+            });
+
+            // Khi nút "Đóng" trên modal được nhấn, modal sẽ được đóng
+            $(".modal .close").click(function () {
+                $(this).closest(".modal").modal('hide');
+            });
+
+            $('#changePasswordForm').submit(function (event) {
+                event.preventDefault(); // Prevent the form from submitting via the browser
+
+                var form = $(this);
+                var newPassword = $('#newPassword').val();
+                var confirmPassword = $('#confirmPassword').val();
+
+                // Kiểm tra xem mật khẩu mới và xác nhận mật khẩu có khớp nhau không
+                if (newPassword !== confirmPassword) {
+                    $('#passwordError').text("Mật khẩu mới và xác nhận mật khẩu không khớp.").show();
+                    return;
+                }
+
+                $.ajax({
+                    url: form.attr('action'),
+                    type: 'POST',
+                    data: form.serialize(),
+                    success: function (response) {
+                        if (response.success) {
+                            alert("Thay đổi mật khẩu thành công");
+                            $('#changePasswordModal').modal('hide');
+                        } else {
+                            $('#passwordError').text(response.error).show();
+                        }
+                    },
+                    error: function (xhr) {
+                        var errorMessage = "Có lỗi xảy ra trong quá trình xử lý yêu cầu.";
+                        $('#passwordError').text(errorMessage).show();
+                    }
+                });
+            });
+            $('#newPassword, #confirmPassword').on('input', function () {
+                $('#passwordError').hide();
+            });
+        });
+    </script>
+}

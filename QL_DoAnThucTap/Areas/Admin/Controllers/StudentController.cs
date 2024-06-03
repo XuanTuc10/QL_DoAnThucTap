@@ -35,7 +35,7 @@ namespace QL_DoAnThucTap.Areas.Admin.Controllers
 
         public IActionResult Add()
         {
-            var lstaccount = _dbContext.accounts.Where(x=>x.Role.Code == "003").ToList();
+            var lstaccount = _dbContext.accounts.Where(x=>x.Role.Code == "003" && x.IsActive == false).ToList();
             var lstclass = _dbContext.classes.ToList();
             ViewBag.Accounts = new SelectList(lstaccount, "Id", "Email");
             ViewBag.Classes = new SelectList(lstclass, "Id", "Name");

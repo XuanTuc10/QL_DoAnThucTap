@@ -27,7 +27,8 @@ namespace QL_DoAnThucTap.Controllers
                 var identity = new ClaimsIdentity(new[]
                 {
                 new Claim(ClaimTypes.Name, account.Email),
-                new Claim(ClaimTypes.Role, decentralization?.Code ?? "")
+                new Claim(ClaimTypes.Role, decentralization?.Code ?? ""),
+                new Claim("AccountId", account.Id.ToString())
                 }, "signin");
                 var princial = new ClaimsPrincipal(identity);
                 var singin = HttpContext.SignInAsync(princial);

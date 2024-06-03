@@ -35,7 +35,7 @@ namespace QL_DoAnThucTap.Areas.Admin.Controllers
 
         public IActionResult Add()
         {
-            var lstaccount = _dbContext.accounts.Where(x => x.Role.Code == "002").ToList();
+            var lstaccount = _dbContext.accounts.Where(x => x.Role.Code == "002" && x.IsActive == false).ToList();
             ViewBag.Accounts = new SelectList(lstaccount, "Id", "Email");
             return View();
         }
@@ -131,7 +131,6 @@ namespace QL_DoAnThucTap.Areas.Admin.Controllers
                 _dbContext.SaveChanges();
                 return RedirectToAction("Index");
             }
-            return View(model);
         }
         [HttpPost]
         public IActionResult Delete(int id)

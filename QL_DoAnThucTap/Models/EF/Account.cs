@@ -1,10 +1,13 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace QL_DoAnThucTap.Models.EF
 {
     public class Account : BaseEntity
     {
-        public string Email { get; set; }  
+        [Required(ErrorMessage ="Email is requied")]
+        public string Email { get; set; }
+        [Required(ErrorMessage = "Password is requied")]
         public string Password { get; set; }
         public bool IsActive { get; set; }
         [ForeignKey("RoleId")]  

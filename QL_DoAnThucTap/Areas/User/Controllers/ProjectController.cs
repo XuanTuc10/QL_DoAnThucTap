@@ -40,7 +40,6 @@ namespace QL_DoAnThucTap.Areas.User.Controllers
                             .Where(x=>x.Teacher.Id == teacher.Id)
                             .OrderByDescending(x => x.CreateDate)
                             .ToList();
-                return View(project);
             }
             if (User.IsInRole("003"))
             {
@@ -53,7 +52,6 @@ namespace QL_DoAnThucTap.Areas.User.Controllers
                             .Where(x=>x.Student.Id == student.Id)
                             .OrderByDescending(x => x.CreateDate)
                             .ToList();
-                return View(project);
             }
             var pageIndex = page.HasValue ? Convert.ToInt32(page) : 1;
             project = project.ToPagedList(pageIndex, pageSize);

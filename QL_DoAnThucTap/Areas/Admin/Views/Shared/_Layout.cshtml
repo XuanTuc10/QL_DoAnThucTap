@@ -187,6 +187,8 @@
     <!-- ./wrapper -->
     <!-- jQuery -->
     <script src="~/Content/client/plugins/jquery/jquery.min.js"></script>
+    <!-- jQuery UI -->
+    <script src="~/Content/client/plugins/jquery-ui/jquery-ui.min.js"></script>
     <!-- Bootstrap 4 -->
     <script src="~/Content/client/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
     <!-- Select2 -->
@@ -293,15 +295,15 @@
 
         })
         // BS-Stepper Init
-        document.addEventListener('DOMContentLoaded', function () {
+        /*document.addEventListener('DOMContentLoaded', function () {
             window.stepper = new Stepper(document.querySelector('.bs-stepper'))
-        })
+        })*/
 
         // DropzoneJS Demo Code Start
         Dropzone.autoDiscover = false
 
         // Get the template HTML and remove it from the doumenthe template HTML and remove it from the doument
-        var previewNode = document.querySelector("#template")
+        /*var previewNode = document.querySelector("#template")
         previewNode.id = ""
         var previewTemplate = previewNode.parentNode.innerHTML
         previewNode.parentNode.removeChild(previewNode)
@@ -347,10 +349,11 @@
         }
         document.querySelector("#actions .cancel").onclick = function () {
             myDropzone.removeAllFiles(true)
-        }
-        // DropzoneJS Demo Code End</script>
+        }*/
+        // DropzoneJS Demo Code End
+    </script>
+    @RenderSection("scripts", required: false)
     <script src="~/Content/ckeditor/ckeditor.js"></script>
     <script src="~/Content/ckfinder/ckfinder.js"></script>
-    @RenderSection("scripts", required: false)
 </body>
 </html>

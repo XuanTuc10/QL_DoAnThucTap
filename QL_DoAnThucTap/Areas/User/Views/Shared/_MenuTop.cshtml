@@ -1,4 +1,9 @@
-﻿<nav class="navbar navbar-expand-lg navbar-light px-4 px-lg-5 py-3 py-lg-0">
+﻿@* @{
+    int? remindersCount = ViewContext.HttpContext.Session.GetInt32("RemindersCount");
+    var remindersToday = ViewBag.RemindersToday as List<QL_DoAnThucTap.Models.EF.Reminder>;
+} *@
+
+<nav class="navbar navbar-expand-lg navbar-light px-4 px-lg-5 py-3 py-lg-0">
     <a href="" class="navbar-brand p-0 d-flex align-items-center">
         <img src="/Content/user/lib/img/HUNRE_Logo.png" alt="Logo" style="height: 50px;padding-right: 12px;">
         <h1 class="m-0 ml-2">Quản Lý Đồ Án</h1>
@@ -17,20 +22,19 @@
         </div>
         <div class="navbar-nav mx-auto py-0">
             <div class="nav-item dropdown">
-                <a href="#" class="nav-link" data-bs-toggle="dropdown">Hệ thống</a>
+                <a href="#" class="nav-link" data-bs-toggle="dropdown"><i class="fas fa-cog"></i></a>
                 <div class="dropdown-menu m-0">
                     @if (User.IsInRole("001") || User.IsInRole("002"))
                     {
                         <a href="/Admin" class="dropdown-item">Trang quản trị</a>
                     }
-                    <a href="/User/Account" class="dropdown-item">Cài đặt</a>
+                    <a href="/User/Account" class="dropdown-item">@User.Identity.Name</a>
                     <form id="logoutForm" method="post" action="/Access/LogOut" style="display: none;">
                         @Html.AntiForgeryToken()
                     </form>
-                    <a href="#" class="dropdown-item" onclick="event.preventDefault(); document.getElementById('logoutForm').submit();">Log out</a>
+                    <a href="#" class="dropdown-item" onclick="event.preventDefault(); document.getElementById('logoutForm').submit();">Đăng xuất</a>
                 </div>
             </div>
         </div>
     </div>
 </nav>
-
